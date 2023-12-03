@@ -32,8 +32,11 @@
         // Initialise html with ul opening tag
         let html = "<ul>";
 
-        // Iterate by index from 1 until the generation number wanted
-        for(let i=1;i<=document.getElementById("generationSelect").value;i++) {
+        // Save the generation indicies from value hardcoded in HTML, using split to have an array of first dex number and last dex number
+        let genIndices = document.getElementById("generationSelect").value.split(",");
+
+        // Iterate by index from beginning until end of generation, based on indices in select option
+        for(let i=+(genIndices[0]);i<=+(genIndices[1]);i++) {
             // Add each pokemon's name as a list item
             html += `<li>${pokedex.get(i)}</li>`
         }
