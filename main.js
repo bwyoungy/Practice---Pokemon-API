@@ -67,18 +67,11 @@
         if ([...pokedex.values()].includes(searchTerm)) {
             const searchedPokemon = await getPokemonFromAPIbyName(searchTerm);
 
-            // Save abilities to array
-            let pokeAbilities = [];
-            searchedPokemon.abilities.forEach(item => {
-                pokeAbilities.push(item.ability.name);
-            })
+            // Save abilities and moves to array
+            const pokeAbilities = searchedPokemon.abilities.map(item => item.ability.name);
+            const pokeMoves = searchedPokemon.moves.map(item => item.move.name);
 
-            // Save moves to array
-            let pokeMoves = [];
-            searchedPokemon.moves.forEach(item => {
-                pokeMoves.push(item.move.name);
-            })
-
+            // Add pokemon data to html
             html += `
             <div>
                 <img src="${searchedPokemon.sprites.other["official-artwork"].front_default}" alt="${searchTerm}" height="150px">
@@ -91,6 +84,7 @@
             </div>`;
         }
         else {
+            // Print user a message that there were no search results
             html += `There is no Pokemon named "${searchTerm}" in the Pokedex`;
         }
 
