@@ -9,8 +9,9 @@
     // Save pokemon display object as a variable to save times accessing DOM
     pokemonDisplay = document.getElementById("pokemonDisplay");
     
-    // Bind loadPokemon function to get All button
+    /* Bind functions to buttons */
     document.getElementById("getAllBtn").addEventListener("click", showPokemon);
+    document.getElementById("searchBtn").addEventListener("click", searchPokemon);
 
     // Clear display by setting innerHTML to empty
     document.getElementById("clearBtn").addEventListener("click", ()=>{
@@ -53,5 +54,64 @@
         
         // Set the div for showing pokemon with the list created
         pokemonDisplay.innerHTML = html;
+    }
+
+    // Function to search pokemon
+    async function searchPokemon() {
+        // Get searchTerm from user's search and convert to lowercase to avoid mismatch due to capital letters
+        const searchTerm = document.getElementById("searchBox").value.toLowerCase();
+
+        // Initialise html with opening div tag
+        let html = "<div>";
+
+        if ([...pokedex.values()].includes(searchTerm)) {
+            const searchedPokemon = await getPokemonFromAPIbyName(searchTerm);
+
+            // Save abilities to array
+            let pokeAbilities = [];
+            searchedPokemon.abilities.forEach(item => {
+                pokeAbilities.push(item.ability.name);
+            })
+
+            // Save moves to array
+            let pokeMoves = [];
+            searchedPokemon.moves.forEach(item => {
+                pokeMoves.push(item.move.name);
+            })
+
+            html += `
+            <div>
+                <img src="${searchedPokemon.sprites.other["official-artwork"].front_default}" alt="${searchTerm}" height="150px">
+            </div>
+            <div>
+                <h3>${searchTerm}</h3>
+                Type: ${searchedPokemon.types[0].type.name} ${searchedPokemon.types[1] !== undefined ? searchedPokemon.types[1].type.name : ""} <br>
+                Abilities: ${pokeAbilities.join(", ")} <br>
+                Moves: ${pokeMoves.join(", ")}
+            </div>`;
+        }
+        else {
+            html += `There is no Pokemon named "${searchTerm}" in the Pokedex`;
+        }
+
+        // Close div tag
+        html += "</div>";
+
+        // Set the div for showing pokemon with search result
+        pokemonDisplay.innerHTML = html;
+    }
+
+    async function getPokemonFromAPIbyName(pokeName) {        
+        try {
+            // Fetch pokemon from API
+            const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokeName}`);
+            const pokemon = await response.json();
+            
+            return pokemon;            
+        }
+        catch (error) {
+            // Alert user there was a problem retrieving the information
+            alert("There was an error retrieving the information from the Pokemon API. Please try reloading the page or reach out to us.");
+        }
     }
 })()
