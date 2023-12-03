@@ -61,7 +61,19 @@
     // Function to search pokemon
     async function searchPokemon() {
         // Get searchTerm from user's search and convert to lowercase to avoid mismatch due to capital letters
-        const searchTerm = document.getElementById("searchBox").value.toLowerCase();
+        let searchTerm = document.getElementById("searchBox").value.toLowerCase();
+
+        // Check if the search type is by number
+        if (document.getElementById("searchType").value === "number") {
+            // Check if the pokedex contains pokemon with that number
+            // And if so set the searchTerm to that pokemon's name
+            if (pokedex.has(+(searchTerm))) searchTerm = pokedex.get(+(searchTerm));
+            else {
+                // Display error message to user and exit search function
+                pokemonDisplay.innerHTML = `There is no pokemon with the number ${searchTerm} in the Pokedex`;
+                return;
+            }
+        }
 
         // Initialise html with opening div tag
         let html = "<div>";
