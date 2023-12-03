@@ -12,6 +12,7 @@
     /* Bind functions to buttons */
     document.getElementById("getAllBtn").addEventListener("click", showPokemon);
     document.getElementById("searchBtn").addEventListener("click", searchPokemon);
+    document.getElementById("maxWeightBtn").addEventListener("click", showPokemonByMaxWeight);
     document.getElementById("getFreqAbilityBtn").addEventListener("click", getMostFrequentAbility);
 
     // Clear display by setting innerHTML to empty
@@ -110,8 +111,40 @@
         }
     }
 
+    // Function to show Pokemon by max weight user chose
+    async function showPokemonByMaxWeight() {
+        
+        // Initialise variable to for weight user inputed
+        let userWeight = +(document.getElementById("maxWeightBox").value);
+        
+        // Let user know that function is working
+        pokemonDisplay.innerHTML = `Searching for pokemon weighing ${userWeight} or less...`;
+        
+        // Initialise html with ul opening tag
+        let html = "<ul>";
+
+        // Iterate over all the Pokemon in the pokedex
+        for (const pokeName of pokedex.values()) {
+            // In each iteration get the information about the current pokemon from the API
+            const currPokemon = await getPokemonFromAPIbyName(pokeName);
+
+            // Check if weight is less than (or equal) to user's input and add to list if so
+            if (currPokemon.weight <= userWeight) html += `<li>${pokeName}</li>`;
+        }
+
+        // Close ul tag
+        html += "</ul>";
+
+        // Set the div for showing pokemon with result
+        pokemonDisplay.innerHTML = html;
+
+    }
+
     // Function to search for most frequent ability in the Pokemon
     async function getMostFrequentAbility() {
+        // Let user know that function is working
+        pokemonDisplay.innerHTML = "Calculating most frequent ability...";
+        
         // Create map to count abilities - key is the ability name, value is the count
         const abilityCount = new Map();
 
