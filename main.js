@@ -5,9 +5,17 @@
     // Initialise global map to save Pokemon by Pokedex number and fill it
     let pokedex = new Map();
     loadPokemonFromAPI();
+
+    // Save pokemon display object as a variable to save times accessing DOM
+    pokemonDisplay = document.getElementById("pokemonDisplay");
     
     // Bind loadPokemon function to get All button
     document.getElementById("getAllBtn").addEventListener("click", showPokemon);
+
+    // Clear display by setting innerHTML to empty
+    document.getElementById("clearBtn").addEventListener("click", ()=>{
+        pokemonDisplay.innerHTML = "";
+    });
 
     // Function to load all Pokemon to the pokedex
     async function loadPokemonFromAPI() {        
@@ -44,6 +52,6 @@
         html += "</ul>"
         
         // Set the div for showing pokemon with the list created
-        document.getElementById("shownPokemon").innerHTML = html;
+        pokemonDisplay.innerHTML = html;
     }
 })()
