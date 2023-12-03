@@ -91,7 +91,7 @@
                 <img src="${searchedPokemon.sprites.other["official-artwork"].front_default}" alt="${searchTerm}" height="150px">
             </div>
             <div>
-                <h3>${searchTerm}</h3>
+                <h3>${searchTerm} #${searchedPokemon.id}</h3>
                 Type: ${searchedPokemon.types[0].type.name} ${searchedPokemon.types[1] !== undefined ? searchedPokemon.types[1].type.name : ""} <br>
                 Abilities: ${pokeAbilities.join(", ")} <br>
                 Moves: ${pokeMoves.join(", ")}
