@@ -12,6 +12,7 @@
     /* Bind functions to buttons */
     document.getElementById("getAllBtn").addEventListener("click", showPokemon);
     document.getElementById("searchBtn").addEventListener("click", searchPokemon);
+    document.getElementById("getFreqAbilityBtn").addEventListener("click", getMostFrequentAbility);
 
     // Clear display by setting innerHTML to empty
     document.getElementById("clearBtn").addEventListener("click", ()=>{
@@ -108,4 +109,63 @@
             alert("There was an error retrieving the information from the Pokemon API. Please try reloading the page or reach out to us.");
         }
     }
+
+    // Function to search for most frequent ability in the Pokemon
+    async function getMostFrequentAbility() {
+        // Create map to count abilities - key is the ability name, value is the count
+        const abilityCount = new Map();
+
+        // Initialise variables to track max count of abilities and name of most frequent ability
+        let maxCount = 0;
+        let mostFrequentAbility = "";
+
+        // Iterate over all the Pokemon in the pokedex
+        for (const pokeName of pokedex.values()) {
+            // In each iteration get the information about the current pokemon from the API
+            const currPokemon = await getPokemonFromAPIbyName(pokeName);
+
+            // Iterate over the abilities of the pokemon
+            for (const item of currPokemon.abilities) {
+                // Save abilityName for clarity
+                let abilityName = item.ability.name;
+                // Initialise abilityCounter as 1 (if first time ability is encountered)
+                let abilityCounter = 1;
+
+                // Check if ability has been encountered already
+                // If so, save the counter ad the current count plus one
+                // Otherwise the counter stays 1 as default
+                if (abilityCount.has(abilityName)) abilityCounter = abilityCount.get(abilityName)+1;
+                
+                // Set the new ability count
+                abilityCount.set(abilityName, abilityCounter);
+
+                // Check if the ability count is more than the maximum so far
+                // If so save the new maximum and the name of the most frequent ability so far
+                if (abilityCounter > maxCount) {
+                    maxCount = abilityCounter;
+                    mostFrequentAbility = abilityName;
+                }
+            }
+        }
+
+        // Display most frequent ability to HTML
+        pokemonDisplay.innerHTML = `The most frequent ability is ${mostFrequentAbility} with ${maxCount} pokemon having it.`
+
+    }
+
+    // Function to get information about a pokemon by it's name
+    async function getPokemonFromAPIbyName(pokeName) {        
+        try {
+            // Fetch pokemon from API
+            const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokeName}`);
+            const pokemon = await response.json();
+            
+            return pokemon;            
+        }
+        catch (error) {
+            // Alert user there was a problem retrieving the information
+            alert("There was an error retrieving the information from the Pokemon API. Please try reloading the page or reach out to us.");
+        }
+    }
+
 })()
